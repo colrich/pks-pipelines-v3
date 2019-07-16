@@ -1,0 +1,39 @@
+---
+
+foundation: labverify                                       # current foundation code
+
+s3:
+  endpoint: http://mls.21dr.gridbug.io:9000                       # the S3 endpoint
+  access_key_id: craig                 # credhub: ((s3_access_key_id))
+  secret_access_key: aoeu1234         # credhub: ((s3_secret_access_key))
+  region_name: ""                                     # optional, regin name
+  buckets:
+    platform_automation: platform-automation-3.0.1          # map bucket for platform-automation artifacts (e.g. image)
+    foundation: labverify                                   # map bucket for current foundation for hosting exported installation-*.zip files
+
+credhub:
+  server: https://credhub.dr.gridbug.io:8844             # CredHub endpoint
+  ca_cert: ((credhub_ca_cert.certificate))            # CA Cert from CredHub
+  client: ((credhub_client.username))                 # UAA Client for CredHub access
+  secret: ((credhub_client.password))                 # UAA secret for CredHub access
+  prefix: /concourse/main/install-opsman-verify-test
+  interpolate_folders: "labverify/config labverify/env labverify/vars"  # The folders from configuration repo (see below git.configuration) to be interpolated
+
+git:
+  configuration:                                      # The configuration repo
+    uri: "ssh://craig@mls.21dr.gridbug.io:2222/craig/pas-config-21dr-v3.git"
+    products_file: products.yml                       # The products yaml file that used to track for version changes
+  user:                                               # The user for access to configuration repo
+    email: colrich@pivotal.io                          # a dummy email will work if we're using private_key for authentication
+    username: craig                   # a dummy username will work if we're using private_key for authentication
+    #password: ((git_user.password))                  # optional if we're using private_key for authentication
+  private_key: | 
+    -----BEGIN RSA PRIVATE KEY-----
+    xxxxxxx
+    -----END RSA PRIVATE KEY-----
+
+schedule:
+  patch:                                              # Patch scheduler, the whole chunk will be used as ((schedule.patch))
+    start: 12:00 AM                                   # by following Time Resource https://github.com/concourse/time-resource
+    stop: 1:00 AM
+    location: Asia/Singapore

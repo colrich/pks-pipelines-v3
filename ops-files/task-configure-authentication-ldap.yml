@@ -1,0 +1,6 @@
+- op: replace  
+  path: /jobs/name=install-opsman/plan/task=configure-authentication
+  value:
+    task: configure-authentication
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/configure-ldap-authentication.yml
